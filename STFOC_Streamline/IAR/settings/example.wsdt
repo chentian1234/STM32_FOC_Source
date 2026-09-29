@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+  <CurrentConfigs><Project>example/Debug</Project></CurrentConfigs></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>277</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      <PreferedWindows><Position>1</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows></Workspace>
+      <Build>
+        
+        
+        
+        
+      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>980</ColumnWidth1><ColumnWidth2>261</ColumnWidth2><ColumnWidth3>65</ColumnWidth3></Build>
+    <TerminalIO/><Debug-Log><ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1307</ColumnWidth1></Debug-Log><Find-in-Files><ColumnWidth0>470</ColumnWidth0><ColumnWidth1>67</ColumnWidth1><ColumnWidth2>806</ColumnWidth2></Find-in-Files></Static>
+    <Windows>
+      
+      
+    <Wnd0>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-400-18666</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+        <Tab><Identity>TabID-3065-18568</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab><Tab><Identity>TabID-7164-29309</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab></Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd0><Wnd3><Tabs><Tab><Identity>TabID-5932-15430</Identity><TabName>Workspace</TabName><Factory>Workspace</Factory><Session><NodeDict><ExpandedNode>example</ExpandedNode><ExpandedNode>example/MC</ExpandedNode><ExpandedNode>example/MC/SRC</ExpandedNode><ExpandedNode>example/USER</ExpandedNode></NodeDict></Session></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd3></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\MC\SRC\MC_Keys.c</Filename><XPos>0</XPos><YPos>292</YPos><SelStart>8010</SelStart><SelEnd>8010</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\UartProcess.c</Filename><XPos>0</XPos><YPos>73</YPos><SelStart>1252</SelStart><SelEnd>1252</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\FWLIB\src\stm32f10x_adc.c</Filename><XPos>0</XPos><YPos>350</YPos><SelStart>11508</SelStart><SelEnd>11508</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\MC\INC\MC_MotorControl_Layer.h</Filename><XPos>0</XPos><YPos>35</YPos><SelStart>2127</SelStart><SelEnd>2127</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\uart.c</Filename><XPos>0</XPos><YPos>18</YPos><SelStart>658</SelStart><SelEnd>658</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\MC\SRC\MC_PID_regulators.c</Filename><XPos>0</XPos><YPos>45</YPos><SelStart>2607</SelStart><SelEnd>2615</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\MC\SRC\MC_MotorControl_Layer.c</Filename><XPos>0</XPos><YPos>383</YPos><SelStart>12629</SelStart><SelEnd>12629</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\MC\INC\MC_PMSM_motor_param.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>1707</SelStart><SelEnd>1707</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\MC\INC\MC_type.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>871</SelStart><SelEnd>871</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\MC\INC\MC_Globals.h</Filename><XPos>0</XPos><YPos>21</YPos><SelStart>0</SelStart><SelEnd>3234</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\MC\SRC\MC_Globals.c</Filename><XPos>0</XPos><YPos>51</YPos><SelStart>2722</SelStart><SelEnd>2733</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\CMSIS\stm32f10x.h</Filename><XPos>0</XPos><YPos>451</YPos><SelStart>35457</SelStart><SelEnd>35457</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\MC\INC\MC_const.h</Filename><XPos>0</XPos><YPos>33</YPos><SelStart>0</SelStart><SelEnd>4760</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\MC\INC\MC_Clarke_Park.h</Filename><XPos>0</XPos><YPos>87</YPos><SelStart>0</SelStart><SelEnd>4401</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\MC\SRC\MC_Clarke_Park.c</Filename><XPos>0</XPos><YPos>426</YPos><SelStart>16663</SelStart><SelEnd>16663</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\MC\SRC\MC_FOC_Drive.c</Filename><XPos>0</XPos><YPos>123</YPos><SelStart>4730</SelStart><SelEnd>4745</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\MC\INC\stm32f10x_MClib.h</Filename><XPos>0</XPos><YPos>30</YPos><SelStart>1915</SelStart><SelEnd>1939</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\MC\SRC\stm32f10x_svpwm_3shunt.c</Filename><XPos>0</XPos><YPos>30</YPos><SelStart>1687</SelStart><SelEnd>1697</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\MC\SRC\stm32f10x_encoder.c</Filename><XPos>0</XPos><YPos>367</YPos><SelStart>15059</SelStart><SelEnd>15059</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\MC\INC\MC_pwm_3shunt_prm.h</Filename><XPos>0</XPos><YPos>37</YPos><SelStart>1479</SelStart><SelEnd>1836</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\MC\INC\MC_Control_Param.h</Filename><XPos>0</XPos><YPos>24</YPos><SelStart>1914</SelStart><SelEnd>1914</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\stm32f10x_it.c</Filename><XPos>0</XPos><YPos>160</YPos><SelStart>4838</SelStart><SelEnd>4838</SelEnd></Tab><ActiveTab>21</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\MC\SRC\stm32f10x_Timebase.c</Filename><XPos>0</XPos><YPos>258</YPos><SelStart>9366</SelStart><SelEnd>9387</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\MC\INC\MC_encoder_param.h</Filename><XPos>0</XPos><YPos>41</YPos><SelStart>2729</SelStart><SelEnd>2729</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\USER\main.c</Filename><XPos>0</XPos><YPos>93</YPos><SelStart>132</SelStart><SelEnd>132</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\FWLIB\src\stm32f10x_gpio.c</Filename><XPos>0</XPos><YPos>368</YPos><SelStart>11500</SelStart><SelEnd>11500</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-00f9cf90><key>iaridepm.enu1</key></Toolbar-00f9cf90></Sizes></Row0><Row1><Sizes/></Row1></Top><Left><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>430</Bottom><Right>368</Right><x>-2</x><y>-2</y><xscreen>200</xscreen><yscreen>200</yscreen><sizeHorzCX>146413</sizeHorzCX><sizeHorzCY>291545</sizeHorzCY><sizeVertCX>270864</sizeVertCX><sizeVertCY>629738</sizeVertCY></Rect></Wnd3></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>211</Bottom><Right>1368</Right><x>-2</x><y>-2</y><xscreen>1370</xscreen><yscreen>213</yscreen><sizeHorzCX>1002928</sizeHorzCX><sizeHorzCY>310496</sizeHorzCY><sizeVertCX>97365</sizeVertCX><sizeVertCY>416910</sizeVertCY></Rect></Wnd0></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+
