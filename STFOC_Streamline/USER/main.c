@@ -55,7 +55,7 @@ int main(void)
             break;
 
         case RUN:   // 运行状态: 电机正常运行，持续监控速度反馈是否异常
-            if(ENC_ErrorOnFeedback() == TRUE)   // 编码器反馈出错?
+            if(ENC_ErrorOnFeedback() == TRUE)   // 编码器反馈出错
             {
                 MCL_SetFault(SPEED_FEEDBACK);   // 上报速度反馈故障
             }

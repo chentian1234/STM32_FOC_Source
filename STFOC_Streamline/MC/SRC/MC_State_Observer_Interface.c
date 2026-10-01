@@ -123,20 +123,14 @@ bool IsObserverConverged(void);
 void STO_StartUp_Init(void);
 
 /*******************************************************************************
-* Function Name : STO_StateObserverInterface_Init
-* Description : It fills and passes to the State Obsever module the data 
-*               structure necessary for rotor position observation 
-* Input : None
-* Output : None
-* Return : None
-* 功能说明(中文) : 填充观测器常数结构体 StateObserver_Const（C1/C3/C5、F1/F2/F3、
-*                  C6、PLL 增益、最大转速 dpp 等），调用 STO_Gains_Init 下发给
-*                  底层观测器。每次电机启动初始化时调用一次（MCL_Init 触发）。
-* 参数(中文)     : 无。
-* 返回(中文)     : 无。
-* 备注(中文)     : 依赖电机参数 RS/LS、SAMPLING_FREQ、POLE_PAIR_NUM、MAX_CURRENT；
-*                  当定义 OBSERVER_GAIN_TUNING 时，使用运行时可调增益
-*                  (wK1_LO/wK2_LO/PLL 增益)覆盖 C2/C4 与 PLL 系数。
+* 功能说明 : 填充观测器常数结构体 StateObserver_Const（C1/C3/C5、F1/F2/F3、
+*            C6、PLL 增益、最大转速 dpp 等），调用 STO_Gains_Init 下发给
+*            底层观测器。每次电机启动初始化时调用一次（MCL_Init 触发）。
+* 参数     : 无。
+* 返回     : 无。
+* 备注     : 依赖电机参数 RS/LS、SAMPLING_FREQ、POLE_PAIR_NUM、MAX_CURRENT；
+*            当定义 OBSERVER_GAIN_TUNING 时，使用运行时可调增益
+*            (wK1_LO/wK2_LO/PLL 增益)覆盖 C2/C4 与 PLL 系数。
 *******************************************************************************/
 void STO_StateObserverInterface_Init(void)
 {
@@ -160,7 +154,7 @@ void STO_StateObserverInterface_Init(void)
   }
 
 #ifdef OBSERVER_GAIN_TUNING  
-  /* lines below for debug porpose*/
+  /* 以下为调试目的：在线整定增益时覆盖 C2/C4 与 PLL 系数 */
   StateObserver_ConstStruct.hC2 = C2;
   StateObserver_ConstStruct.hC4 = C4;
     
@@ -184,18 +178,12 @@ void STO_StateObserverInterface_Init(void)
 }
   
 /*******************************************************************************
-* Function Name : STO_Check_Speed_Reliability
-* Description : Check for the continuity of the speed reliability. If the speed 
-*               is continously not reliable, the motor must be stopped 
-* Input : None
-* Output : None
-* Return : boolean value: TRUE if speed is reliable, FALSE otherwise.
-* 功能说明(中文) : 对观测器转速可信度做迟滞滤波：若连续 RELIABILITY_HYSTERESYS
-*                  次均不可信才返回 FALSE（请求停机）；期间只要出现一次可信即清零
-*                  并返回 TRUE。按速度采样周期调用。
-* 参数(中文)     : 无。
-* 返回(中文)     : bool — TRUE 转速可信、允许继续运行；FALSE 判定反馈丢失。
-* 备注(中文)     : 使用函数内 static bCounter 记录连续不可信次数。
+* 功能说明 : 对观测器转速可信度做迟滞滤波：若连续 RELIABILITY_HYSTERESYS
+*            次均不可信才返回 FALSE（请求停机）；期间只要出现一次可信即清零
+*            并返回 TRUE。按速度采样周期调用。
+* 参数     : 无。
+* 返回     : bool — TRUE 转速可信、允许继续运行；FALSE 判定反馈丢失。
+* 备注     : 使用函数内 static bCounter 记录连续不可信次数。
 *******************************************************************************/
 bool STO_Check_Speed_Reliability(void)
 {
@@ -224,20 +212,14 @@ bool STO_Check_Speed_Reliability(void)
 }
            
 /*******************************************************************************
-* Function Name : IsObserverConverged
-* Description : Check for algorithm convergence. The speed reliability and the
-*               range of the value of the estimated speed are checked. 
-* Input : None
-* Output : None
-* Return : boolean value: TRUE if algortihm converged, FALSE otherwise.
-* 功能说明(中文) : 判定观测器算法是否收敛，作为开环强拖切换到闭环的依据。
-*                  需同时满足：转速可信(方差足够小)、估计转速>MINIMUM_SPEED、
-*                  且估计机械转速落入强拖当前频率的约 0.94~1.0 倍窗口内，
-*                  并连续满足 NB_CONSECUTIVE_TESTS 次。
-* 参数(中文)     : 无。
-* 返回(中文)     : bool — TRUE 表示已收敛。
-* 备注(中文)     : 使用文件级 static 变量 bConvCounter；比较窗口由当前强拖频率
-*                  wStart_Up_Freq 换算，转速以 0.1Hz 定标比较（每个 PWM 周期调用）。
+* 功能说明 : 判定观测器算法是否收敛，作为开环强拖切换到闭环的依据。
+*            需同时满足：转速可信(方差足够小)、估计转速>MINIMUM_SPEED、
+*            且估计机械转速落入强拖当前频率的约 0.94~1.0 倍窗口内，
+*            并连续满足 NB_CONSECUTIVE_TESTS 次。
+* 参数     : 无。
+* 返回     : bool — TRUE 表示已收敛。
+* 备注     : 使用文件级 static 变量 bConvCounter；比较窗口由当前强拖频率
+*            wStart_Up_Freq 换算，转速以 0.1Hz 定标比较（每个 PWM 周期调用）。
 *******************************************************************************/
 bool IsObserverConverged(void)
 { 

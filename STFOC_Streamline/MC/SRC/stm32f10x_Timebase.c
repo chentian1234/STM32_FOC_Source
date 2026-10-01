@@ -81,12 +81,6 @@ static u16 hSpeedMeas_Timebase_500us = SPEED_SAMPLING_TIME;
 static u16 hTorqueSwapping = SQUARE_WAVE_PERIOD; 
 #endif
 /*******************************************************************************
-* Function Name  : TB_Init
-* Description    : TimeBase peripheral initialization. The base time is set to 
-*                  500usec and the related interrupt is enabled  
-* Input          : None
-* Output         : None
-* Return         : None
 * 功能说明(中文) : 时基初始化。把 SysTick 时钟源选为 AHB(HCLK)，并配置为每
 *                  500us 产生一次中断（72MHz 下重装载值 36000），从而建立整机
 *                  500us 计时节拍。
@@ -112,11 +106,6 @@ void TB_Init(void)
 }
 
 /*******************************************************************************
-* Function Name  : TB_Wait
-* Description    : The function wait for a delay to be over.   
-* Input          : None
-* Output         : None
-* Return         : None
 * 功能说明(中文) : 阻塞式延时。把 'time' 装入 500us 计数变量后忙等，直到 SysTick
 *                  中断把它递减到 0，实现 time×0.5ms 的延时。
 * 参数(中文)     : time — 延时长度，单位 500us（如 time=10 → 5ms）。

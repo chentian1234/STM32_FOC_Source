@@ -116,30 +116,25 @@ u8 bMenu_index ;                        // 菜单索引全局变量, 不初始�
 #endif
 
 /*******************************************************************************
-* Function Name  : KEYS_Init
-* Description    : Init GPIOs for joystick/button management
-* Input          : None
-* Output         : None
-* Return         : None
-* 功能说明(中文) : 初始化摇杆五向键(上/下/左/右/选择)与用户按键的 GPIO, 全部配置为
-*                  浮空输入(GPIO_Mode_IN_FLOATING)。系统上电时调用一次。
-* 参数(中文)     : 无。
-* 返回(中文)     : 无。
-* 备注(中文)     : 使能 GPIOA/GPIOB/GPIOC/GPIOD/GPIOE 的 APB2 时钟; 引脚分配见文件
-*                  顶部 KEY_xxx / USER_BUTTON 宏。按键低电平有效, 无需外部上下拉配置。
+* 功能说明 : 初始化摇杆五向键(上/下/左/右/选择)与用户按键的 GPIO, 全部配置为
+*            浮空输入(GPIO_Mode_IN_FLOATING)。系统上电时调用一次。
+* 参数     : 无。
+* 返回     : 无。
+* 备注     : 使能 GPIOA/GPIOB/GPIOC/GPIOD/GPIOE 的 APB2 时钟; 引脚分配见文件
+*            顶部 KEY_xxx / USER_BUTTON 宏。按键低电平有效, 无需外部上下拉配置。
 *******************************************************************************/
 void KEYS_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
     
-  /* Enable GPIOA, GPIOB, GPIOC, GPIOE clock */
+  /* 使能 GPIOA、GPIOB、GPIOC、GPIOE 时钟 */
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB | 
                          RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD |
                          RCC_APB2Periph_GPIOE, ENABLE);
  
   GPIO_StructInit(&GPIO_InitStructure);
   
-  /* Joystick GPIOs configuration*/
+  /* 摇杆 GPIO 配置 */
   
   GPIO_InitStructure.GPIO_Pin = KEY_UP_BIT;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
@@ -161,7 +156,7 @@ void KEYS_Init(void)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
   GPIO_Init(KEY_SEL_PORT, &GPIO_InitStructure);
   
-  /* User button GPIO configuration */
+  /* 用户按键 GPIO 配置 */
   
   GPIO_InitStructure.GPIO_Pin = USER_BUTTON_BIT;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
@@ -171,24 +166,19 @@ void KEYS_Init(void)
 
 
 /*******************************************************************************
-* Function Name  : KEYS_Read
-* Description    : Reads key from demoboard.
-* Input          : None
-* Output         : None
-* Return         : Return RIGHT, LEFT, SEL, UP, DOWN, KEY_HOLD or NOKEY
-* 功能说明(中文) : 轮询读取摇杆/按键 GPIO(低电平=按下), 按固定优先级依次判读
-*                  RIGHT > LEFT > SEL > 用户按键 > UP > DOWN, 返回本次按键事件。
-*                  通过比较 bPrevious_key 区分"初次按下"(返回键名)与"长按保持"
-*                  (返回 KEY_HOLD); SEL/用户按键额外用 TB 时间基准做 50ms 去抖。
-* 参数(中文)     : 无。
-* 返回(中文)     : u8 - 按键代码: RIGHT/LEFT/SEL/UP/DOWN(初次按下),
-*                  KEY_HOLD(同一键长按保持)或 NOKEY(无键按下)。
-* 备注(中文)     : 依赖静态变量 bPrevious_key(上次按键)与 bKey_Flag(去抖标志);
-*                  为纯轮询实现, 需被周期调用才能及时捕捉按键。
+* 功能说明 : 轮询读取摇杆/按键 GPIO(低电平=按下), 按固定优先级依次判读
+*            RIGHT > LEFT > SEL > 用户按键 > UP > DOWN, 返回本次按键事件。
+*            通过比较 bPrevious_key 区分"初次按下"(返回键名)与"长按保持"
+*            (返回 KEY_HOLD); SEL/用户按键额外用 TB 时间基准做 50ms 去抖。
+* 参数     : 无。
+* 返回     : u8 - 按键代码: RIGHT/LEFT/SEL/UP/DOWN(初次按下),
+*            KEY_HOLD(同一键长按保持)或 NOKEY(无键按下)。
+* 备注     : 依赖静态变量 bPrevious_key(上次按键)与 bKey_Flag(去抖标志);
+*            为纯轮询实现, 需被周期调用才能及时捕捉按键。
 *******************************************************************************/
 u8 KEYS_Read ( void )
 {
-  /* "RIGHT" key is pressed */
+  /* 右键是否按下 */
   if(!GPIO_ReadInputDataBit(KEY_RIGHT_PORT, KEY_RIGHT_BIT))   // 右键是否被按下?(低电平有效)
   {
     if (bPrevious_key == RIGHT)    // 上次也是右键 → 判为长按保持
@@ -201,7 +191,7 @@ u8 KEYS_Read ( void )
       return RIGHT;                // 首次按下 → 返回右键
     }
   }
-  /* "LEFT" key is pressed */
+  /* 左键是否按下 */
   else if(!GPIO_ReadInputDataBit(KEY_LEFT_PORT, KEY_LEFT_BIT))   // 左键是否被按下?
   {
     if (bPrevious_key == LEFT)     // 上次也是左键 → 长按保持
@@ -214,7 +204,7 @@ u8 KEYS_Read ( void )
       return LEFT;                 // 首次按下 → 返回左键
     }
   }
-  /* "SEL" key is pressed */
+  /* SEL 键是否按下 */
    if(!GPIO_ReadInputDataBit(KEY_SEL_PORT, KEY_SEL_BIT))   // SEL(选择/确认)键是否被按下?
   {
     if (bPrevious_key == SEL)    // 上次也是 SEL → 长按保持
@@ -246,7 +236,7 @@ u8 KEYS_Read ( void )
       }
     }
   }
-  /* "SEL" key is pressed */
+  /* 用户按键是否按下 */
   else if(!GPIO_ReadInputDataBit(USER_BUTTON_PORT, USER_BUTTON_BIT))   // 用户按键(PB9)是否被按下?(功能等同 SEL)
   {
     if (bPrevious_key == SEL)    // 上次也是该键 → 长按保持
@@ -277,7 +267,7 @@ u8 KEYS_Read ( void )
       }
     }
   }
-   /* "UP" key is pressed */
+   /* 上键是否按下 */
   else if(!GPIO_ReadInputDataBit(KEY_UP_PORT, KEY_UP_BIT))   // 上键是否被按下?
   {
     if (bPrevious_key == UP)     // 上次也是上键 → 长按保持
@@ -290,7 +280,7 @@ u8 KEYS_Read ( void )
       return UP;                 // 首次按下 → 返回上键(增加给定值)
     }
   }
-  /* "DOWN" key is pressed */
+  /* 下键是否按下 */
   else if(!GPIO_ReadInputDataBit(KEY_DOWN_PORT, KEY_DOWN_BIT))   // 下键是否被按下?
   {
     if (bPrevious_key == DOWN)   // 上次也是下键 → 长按保持
@@ -304,7 +294,7 @@ u8 KEYS_Read ( void )
     }
   }
   
-  /* No key is pressed */
+  /* 无键按下 */
   else
   {
     bPrevious_key = NOKEY;       // 无键按下: 清空上次按键, 使下次按下重新判为"首次"
@@ -386,4 +376,3 @@ u8 KEYS_ExportbKey(void)
 }
                    
 /******************* (C) COPYRIGHT 2008 STMicroelectronics *****END OF FILE****/
-

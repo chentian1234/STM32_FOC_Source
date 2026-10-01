@@ -345,25 +345,15 @@ static Trig_Components Vector_Components;   // 保存最近一次 Trig_Functions
 const s16 hSin_Cos_Table[256] = SIN_COS_TABLE;   // 0~90° 的 256 点正弦表(Q1.15)，由 MC_const.h 的 SIN_COS_TABLE 展开
 
 /*******************************************************************************
-* Function Name  : Clarke Transformation
-* Description    : This function transforms stator currents qIas and  
-*                  qIbs (which are directed along axes each displaced by  
-*                  120 degrees) into currents qIalpha and qIbeta in a 
-*                  stationary qd reference frame.
-*                  qIalpha = qIas
-*                  qIbeta = -(2*qIbs+qIas)/sqrt(3)
-* Input          : Stat_Curr_a_b
-* Output         : Stat_Curr_alfa_beta
-* Return         : none.
-* 功能说明(中文) : Clarke 变换(三相→两相静止 αβ 坐标系)。把沿互差 120° 三个轴的
-*                  定子相电流 Ia、Ib 变换到两相正交静止 αβ 坐标系。
-*                  在 FOC 电流环(FOC_Model)中每个 PWM 周期调用一次。
-* 参数(中文)     : Curr_Input - 输入定子相电流(s16/Q1.15):
-*                  qI_Component1=Ia，qI_Component2=Ib(单位:按量程归一化的 A)。
-* 返回(中文)     : 两相静止电流(s16/Q1.15):
-*                  qI_Component1=Ialpha=Ia；qI_Component2=Ibeta=-(2*Ib+Ia)/sqrt(3)。
-* 备注(中文)     : 定点实现，用 divSQRT_3(1/sqrt(3) 的 Q1.15)相乘后右移 15 位
-*                  (除以 32768)实现除以 sqrt(3)。该式基于三相无中线 Ic=-(Ia+Ib)。
+* 功能说明 : Clarke 变换(三相→两相静止 αβ 坐标系)。把沿互差 120° 三个轴的
+*            定子相电流 Ia、Ib 变换到两相正交静止 αβ 坐标系。
+*            在 FOC 电流环(FOC_Model)中每个 PWM 周期调用一次。
+* 参数     : Curr_Input - 输入定子相电流(s16/Q1.15):
+*            qI_Component1=Ia，qI_Component2=Ib(单位:按量程归一化的 A)。
+* 返回     : 两相静止电流(s16/Q1.15):
+*            qI_Component1=Ialpha=Ia；qI_Component2=Ibeta=-(2*Ib+Ia)/sqrt(3)。
+* 备注     : 定点实现，用 divSQRT_3(1/sqrt(3) 的 Q1.15)相乘后右移 15 位
+*            (除以 32768)实现除以 sqrt(3)。该式基于三相无中线 Ic=-(Ia+Ib)。
 *******************************************************************************/
 
 Curr_Components Clarke(Curr_Components Curr_Input)
@@ -396,25 +386,15 @@ Curr_Components Clarke(Curr_Components Curr_Input)
 }
 
 /*******************************************************************************
-* Function Name  : Park Transformation
-* Description    : This function transforms stator currents qIalpha and qIbeta,
-*                  which belong to a stationary qd reference frame, to a rotor 
-*                  flux synchronous reference frame (properly oriented), so as 
-*                  to obtain qIq and qIds.
-*                  qId=qIalpha_tmp*sin(theta)+qIbeta_tmp*cos(Theta)
-*                  qIq=qIalpha_tmp*cos(Theta)-qIbeta_tmp*sin(Theta)                 
-* Input          : Stat_Curr_alfa_beta
-* Output         : Stat_Curr_q_d.
-* Return         : none.
-* 功能说明(中文) : Park 变换(两相静止 αβ → 转子磁链同步旋转 dq 坐标系)。
-*                  把静止坐标系电流 Ialpha、Ibeta 旋转到与转子磁链对齐的 dq 坐标系。
-*                  在 FOC 电流环(FOC_Model)中每个 PWM 周期调用一次。
-* 参数(中文)     : Curr_Input - 静止 αβ 电流(s16/Q1.15)：Component1=Ialpha，Component2=Ibeta。
-*                  Theta      - 电角度，s16 定标(0x8000 对应 180°，即整周 65536 对应 360°)。
-* 返回(中文)     : dq 旋转坐标系电流(s16/Q1.15):
-*                  Component1=Iq=Ialpha*cos - Ibeta*sin；Component2=Id=Ialpha*sin + Ibeta*cos。
-* 备注(中文)     : 内部先调用 Trig_Functions 查表得到 sin/cos(存放于全局 Vector_Components)，
-*                  乘法结果右移 15 位反定标。本实现约定的 θ 相位与常规 Id/Iq 定义相差 90°。
+* 功能说明 : Park 变换(两相静止 αβ → 转子磁链同步旋转 dq 坐标系)。
+*            把静止坐标系电流 Ialpha、Ibeta 旋转到与转子磁链对齐的 dq 坐标系。
+*            在 FOC 电流环(FOC_Model)中每个 PWM 周期调用一次。
+* 参数     : Curr_Input - 静止 αβ 电流(s16/Q1.15)：Component1=Ialpha，Component2=Ibeta。
+*            Theta      - 电角度，s16 定标(0x8000 对应 180°，即整周 65536 对应 360°)。
+* 返回     : dq 旋转坐标系电流(s16/Q1.15):
+*            Component1=Iq=Ialpha*cos - Ibeta*sin；Component2=Id=Ialpha*sin + Ibeta*cos。
+* 备注     : 内部先调用 Trig_Functions 查表得到 sin/cos(存放于全局 Vector_Components)，
+*            乘法结果右移 15 位反定标。本实现约定的 θ 相位与常规 Id/Iq 定义相差 90°。
 *******************************************************************************/
 
 Curr_Components Park(Curr_Components Curr_Input, s16 Theta)
@@ -462,23 +442,14 @@ Curr_Components Park(Curr_Components Curr_Input, s16 Theta)
 
 
 /*******************************************************************************
-* Function Name  : RevPark_Circle_Limitation
-* Description    : Check if
-*       Stat_Volt_q_d.qV_Component1^2 + Stat_Volt_q_d.qV_Component2^2 <= 32767^2
-*                  Apply limitation if previous condition is not met,
-*                  by keeping a constant ratio 
-*                  Stat_Volt_q_d.qV_Component1/Stat_Volt_q_d.qV_Component2
-* Input          : None
-* Output         : None
-* Return         : None
-* 功能说明(中文) : 电压圆限制(Circle Limitation)。检查全局 dq 参考电压
-*                  (Stat_Volt_q_d)Vd^2+Vq^2 是否超过 MAX_MODULE^2；
-*                  若超过，则按固定比例等比缩小 Vd、Vq，使电压矢量落在半径为
-*                  MAX_MODULE 的圆内，方向(角度)保持不变。电流环每周期调用一次。
-* 参数(中文)     : 无(直接读写全局 Stat_Volt_q_d)。
-* 返回(中文)     : 无(直接原地修改全局 dq 电压)。
-* 备注(中文)     : 用查表 circle_limit_table 近似开方/幅值归一化，避免开方运算；
-*                  目的是保证 SVPWM 不过调制。副作用:修改全局 Stat_Volt_q_d。
+* 功能说明 : 电压圆限制(Circle Limitation)。检查全局 dq 参考电压
+*            (Stat_Volt_q_d)Vd^2+Vq^2 是否超过 MAX_MODULE^2；
+*            若超过，则按固定比例等比缩小 Vd、Vq，使电压矢量落在半径为
+*            MAX_MODULE 的圆内，方向(角度)保持不变。电流环每周期调用一次。
+* 参数     : 无(直接读写全局 Stat_Volt_q_d)。
+* 返回     : 无(直接原地修改全局 dq 电压)。
+* 备注     : 用查表 circle_limit_table 近似开方/幅值归一化，避免开方运算；
+*            目的是保证 SVPWM 不过调制。副作用:修改全局 Stat_Volt_q_d。
 *******************************************************************************/
 
 void RevPark_Circle_Limitation(void)
@@ -486,14 +457,14 @@ void RevPark_Circle_Limitation(void)
     s32 temp;
     
     temp = Stat_Volt_q_d.qV_Component1 * Stat_Volt_q_d.qV_Component1 
-        + Stat_Volt_q_d.qV_Component2 * Stat_Volt_q_d.qV_Component2;  // min value 0, max value 2*32767*32767   // 计算电压矢量模值平方 Vd^2+Vq^2
+        + Stat_Volt_q_d.qV_Component2 * Stat_Volt_q_d.qV_Component2;  // 计算电压矢量模值平方 Vd^2+Vq^2
     
     if ( temp > (u32)(( MAX_MODULE * MAX_MODULE) ) ) // (Vd^2+Vq^2) > MAX_MODULE^2 ?   // 模值超上限才需限幅
     {
         u16 index;
         
-        temp /= (u32)(512*32768);  // min value START_INDEX, max value 127   // 模值平方归一化为查表索引(0~127)
-        temp -= START_INDEX ;   // min value 0, max value 127 - START_INDEX   // 减去起始索引得到表下标
+        temp /= (u32)(512*32768);  // 模值平方归一化为查表索引(0~127)
+        temp -= START_INDEX ;   // 减去起始索引得到表下标
         index = circle_limit_table[(u8)temp];   // 查表得到缩放增益(Q1.15，32768 表示 1.0)
         
         temp = (s16)Stat_Volt_q_d.qV_Component1 * (u16)(index);    // Vq * 增益
@@ -506,23 +477,14 @@ void RevPark_Circle_Limitation(void)
 } 
 
 /*******************************************************************************
-* Function Name  : Rev_Park Transformation
-* Description    : This function transforms stator voltage qVq and qVd, that 
-*                  belong to a rotor flux synchronous rotating frame, to a 
-*                 stationary reference frame, so as to obtain qValpha and qVbeta
-*                  qValfa=qVq*Cos(theta)+qVd*Sin(theta)
-*                  qVbeta=-qVq*Sin(theta)+qVd*Cos(theta)                  
-* Input          : Stat_Volt_q_d.
-* Output         : Stat_Volt_a_b
-* Return         : none.
-* 功能说明(中文) : 反 Park 变换(同步旋转 dq → 两相静止 αβ 坐标系)。
-*                  把 dq 参考电压变换回静止 αβ 电压，供 SVPWM 生成三相占空比。
-*                  在电流环(FOC_Model)中紧跟圆限制之后每个 PWM 周期调用一次。
-* 参数(中文)     : Volt_Input - dq 电压(s16/Q1.15):Component1=Vq，Component2=Vd。
-* 返回(中文)     : αβ 电压(s16/Q1.15):
-*                  Component1=Valpha=Vq*cos+Vd*sin；Component2=Vbeta=-Vq*sin+Vd*cos。
-* 备注(中文)     : 复用全局 Vector_Components 中上一次 Trig_Functions 得到的 sin/cos
-*                  (调用前须先执行 Park/Trig 更新该全局量)。乘法结果右移 15 位反定标。
+* 功能说明 : 反 Park 变换(同步旋转 dq → 两相静止 αβ 坐标系)。
+*            把 dq 参考电压变换回静止 αβ 电压，供 SVPWM 生成三相占空比。
+*            在电流环(FOC_Model)中紧跟圆限制之后每个 PWM 周期调用一次。
+* 参数     : Volt_Input - dq 电压(s16/Q1.15):Component1=Vq，Component2=Vd。
+* 返回     : αβ 电压(s16/Q1.15):
+*            Component1=Valpha=Vq*cos+Vd*sin；Component2=Vbeta=-Vq*sin+Vd*cos。
+* 备注     : 复用全局 Vector_Components 中上一次 Trig_Functions 得到的 sin/cos
+*            (调用前须先执行 Park/Trig 更新该全局量)。乘法结果右移 15 位反定标。
 *******************************************************************************/
 
 Volt_Components Rev_Park(Volt_Components Volt_Input)
@@ -558,25 +520,19 @@ Volt_Components Rev_Park(Volt_Components Volt_Input)
     return(Volt_Output);
 }
 /*******************************************************************************
-* Function Name  : Trig_Functions 
-* Description    : This function returns Cosine and Sine functions of the input 
-*                  angle
-* Input          : angle in s16 format
-* Output         : Cosine and Sine in s16 format
-* Return         : none.
-* 功能说明(中文) : 三角函数查表。输入电角度，返回其 sin/cos 值(Q1.15)。
-*                  被 Park() 每个 PWM 周期调用(间接也服务反 Park)。
-* 参数(中文)     : hAngle - 电角度，s16 定标:0x8000(=32768)对应 180°，整周 65536 对应 360°。
-* 返回(中文)     : Trig_Components:hSin=sin(hAngle)、hCos=cos(hAngle)，均为 s16/Q1.15。
-* 备注(中文)     : 将角度映射到 0~255 的表内索引，利用 0~90° 正弦表与象限对称性
-*                  查得 sin/cos，避免实时计算三角函数。
+* 功能说明 : 三角函数查表。输入电角度，返回其 sin/cos 值(Q1.15)。
+*            被 Park() 每个 PWM 周期调用(间接也服务反 Park)。
+* 参数     : hAngle - 电角度，s16 定标:0x8000(=32768)对应 180°，整周 65536 对应 360°。
+* 返回     : Trig_Components:hSin=sin(hAngle)、hCos=cos(hAngle)，均为 s16/Q1.15。
+* 备注     : 将角度映射到 0~255 的表内索引，利用 0~90° 正弦表与象限对称性
+*            查得 sin/cos，避免实时计算三角函数。
 *******************************************************************************/
 Trig_Components Trig_Functions(s16 hAngle)
 {
     u16 hindex;
     Trig_Components Local_Components;
     
-    /* 10 bit index computation  */  
+    /* 10 位索引计算 */
     hindex = (u16)(hAngle + 32768);   // 把 s16 电角度平移到 0~65535 的无符号范围
     hindex /= 64;      // 除以 64 得到 0~1023 的索引:低 8 位为表内索引，高 2 位为象限
     

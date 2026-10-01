@@ -85,20 +85,14 @@ u16 h_ADCBusvolt;   /* 母线电压 ADC 原始采样值（由 ADC 中断写入�
 u16 h_ADCTemp;      /* 功率级温度 NTC 的 ADC 原始采样值（由 ADC 中断写入）*/
   
 /*******************************************************************************
-* Function Name  : MCL_Init
-* Description    : This function implements the motor control initialization to 
-*                  be performed at each motor start-up 
-* Input          : None
-* Output         : None
-* Return         : None
-* 功能说明(中文) : 每次电机启动前执行的控制初始化：复位 PID 积分项、FOC_Init，
-*                  按位置/电流采样方式初始化相应外设（编码器/Hall/观测器、
-*                  三/单电阻或 ICS 电流采样），校准并开 PWM 输出，最后等待约 2ms
-*                  的 50% 占空比以给上桥自举电容充电。
-* 参数(中文)     : 无。
-* 返回(中文)     : 无。
-* 备注(中文)     : 会开启 TIM1 PWM 输出并阻塞等待 TB_StartUp_Timeout 结束；
-*                  受编译开关 ENCODER/HALL_SENSORS/NO_SPEED_SENSORS 等影响。
+* 功能说明 : 每次电机启动前执行的控制初始化：复位 PID 积分项、FOC_Init，
+*            按位置/电流采样方式初始化相应外设（编码器/Hall/观测器、
+*            三/单电阻或 ICS 电流采样），校准并开 PWM 输出，最后等待约 2ms
+*            的 50% 占空比以给上桥自举电容充电。
+* 参数     : 无。
+* 返回     : 无。
+* 备注     : 会开启 TIM1 PWM 输出并阻塞等待 TB_StartUp_Timeout 结束；
+*            受编译开关 ENCODER/HALL_SENSORS/NO_SPEED_SENSORS 等影响。
 *******************************************************************************/
 void MCL_Init(void)
 {
@@ -162,17 +156,11 @@ void MCL_Init(void)
 
 
 /*******************************************************************************
-* Function Name  : MCL_Init_Arrays
-* Description    : This function initializes array to avoid erroneous Fault 
-*                  detection after a reswt
-* Input          : None
-* Output         : None
-* Return         : None
-* 功能说明(中文) : 初始化母线电压与温度滑动平均值数组的初值，避免复位后因初始值
-*                  异常而误报故障。系统初始化时调用一次。
-* 参数(中文)     : 无。
-* 返回(中文)     : 无。
-* 备注(中文)     : 母线电压初值取欠压/过压阈值中值；温度初值为 0。
+* 功能说明 : 初始化母线电压与温度滑动平均值数组的初值，避免复位后因初始值
+*            异常而误报故障。系统初始化时调用一次。
+* 参数     : 无。
+* 返回     : 无。
+* 备注     : 母线电压初值取欠压/过压阈值中值；温度初值为 0。
 *******************************************************************************/
 void MCL_Init_Arrays(void)
 {   
@@ -182,45 +170,35 @@ void MCL_Init_Arrays(void)
 
 
 /*******************************************************************************
-* Function Name  : MCL_ChkPowerStage
-* Description    : This function check for power stage working conditions
-* Input          : None
-* Output         : None
-* Return         : None
-* 功能说明(中文) : 检查功率级工作条件：调用过温检测与母线欠压检测，异常则置对应
-*                  故障。周期调用（主循环/状态机）。
-* 参数(中文)     : 无。
-* 返回(中文)     : 无。
-* 备注(中文)     : 母线过压由 ADC 模拟看门狗单独处理，不在此函数内。
+* 功能说明 : 检查功率级工作条件：调用过温检测与母线欠压检测，异常则置对应
+*            故障。周期调用（主循环/状态机）。
+* 参数     : 无。
+* 返回     : 无。
+* 备注     : 母线过压由 ADC 模拟看门狗单独处理，不在此函数内。
 *******************************************************************************/
 void MCL_ChkPowerStage(void) 
 {
-    //  check over temperature of power stage
+    // 检查功率级是否过温
     if (MCL_Chk_OverTemp() == TRUE)   // 功率级是否过温？
     {
       MCL_SetFault(OVERHEAT);         // 置过温故障
     }   
-    //  check bus under voltage 
+    // 检查母线是否欠压
     if (MCL_Chk_BusVolt() == UNDER_VOLT)   // 母线是否欠压？
     {
       MCL_SetFault(UNDER_VOLTAGE);         // 置欠压故障
     }
-    // bus over voltage is detected by analog watchdog
+    // 母线过压由 ADC 模拟看门狗单独检测
 }
 
 /*******************************************************************************
-* Function Name  : MCL_SetFault() 
-* Description    : This function manage faults occurences
-* Input          : Fault type
-* Output         : None
-* Return         : None
-* 功能说明(中文) : 置位一个故障：设置故障最短保持延时、关闭 TIM1 PWM 输出、
-*                  置位故障标志位、把 State 切到 FAULT 并显示故障菜单，
-*                  同时关闭 Shunt 高级电流读取。
-* 参数(中文)     : hFault_type - 故障位掩码（OVERHEAT/OVER_CURRENT/OVER_VOLTAGE/
-*                  UNDER_VOLTAGE/START_UP_FAILURE/SPEED_FEEDBACK）。
-* 返回(中文)     : 无。
-* 备注(中文)     : 会直接关断 PWM 输出；故障需经 MCL_ClearFault 清除。
+* 功能说明 : 置位一个故障：设置故障最短保持延时、关闭 TIM1 PWM 输出、
+*            置位故障标志位、把 State 切到 FAULT 并显示故障菜单，
+*            同时关闭 Shunt 高级电流读取。
+* 参数     : hFault_type - 故障位掩码（OVERHEAT/OVER_CURRENT/OVER_VOLTAGE/
+*            UNDER_VOLTAGE/START_UP_FAILURE/SPEED_FEEDBACK）。
+* 返回     : 无。
+* 备注     : 会直接关断 PWM 输出；故障需经 MCL_ClearFault 清除。
 *******************************************************************************/
 void MCL_SetFault(u16 hFault_type)
 {
@@ -241,19 +219,12 @@ void MCL_SetFault(u16 hFault_type)
 }
 
 /*******************************************************************************
-* Function Name  : MCL_ClearFault() 
-* Description    : This function check if the fault source is over. In case it 
-*                  is, it clears the related flag and return true. Otherwise it 
-*                  returns FALSE
-* Input          : Fault type
-* Output         : None
-* Return         : None
-* 功能说明(中文) : 检查故障源是否已消失：在故障保持延时到期后，逐一复核过热、过压、
-*                  欠压、过流、启动失败、反馈丢失各故障；若条件已满足则清除相应标志。
-*                  当按下 SEL 键且所有故障位均已清零时返回 TRUE，允许恢复运行。
-* 参数(中文)     : 无。
-* 返回(中文)     : bool — TRUE 表示所有故障已清除、可以恢复；FALSE 表示仍有故障。
-* 备注(中文)     : 过流恢复需检测 BRK 引脚为高电平（MCES 正常）。
+* 功能说明 : 检查故障源是否已消失：在故障保持延时到期后，逐一复核过热、过压、
+*            欠压、过流、启动失败、反馈丢失各故障；若条件已满足则清除相应标志。
+*            当按下 SEL 键且所有故障位均已清零时返回 TRUE，允许恢复运行。
+* 参数     : 无。
+* 返回     : bool — TRUE 表示所有故障已清除、可以恢复；FALSE 表示仍有故障。
+* 备注     : 过流恢复需检测 BRK 引脚为高电平（MCES 正常）。
 *******************************************************************************/
 bool MCL_ClearFault(void)
 {     
@@ -285,10 +256,9 @@ bool MCL_ClearFault(void)
     
     if ((wGlobal_Flags & OVER_CURRENT) == OVER_CURRENT)
     {
-      // high level detected on emergency pin?              
-      //It checks for a low level on MCES before re-enable PWM 
-      //peripheral
-      if (GPIO_ReadInputDataBit(BRK_GPIO, BRK_PIN))
+      // 检查紧急制动引脚是否为高电平
+              // 在重新启用 PWM 前检查 MCES 引脚是否为低电平
+              if (GPIO_ReadInputDataBit(BRK_GPIO, BRK_PIN))
       {            
         wGlobal_Flags &= ~OVER_CURRENT;
       }
@@ -324,19 +294,11 @@ bool MCL_ClearFault(void)
 }
 
 /*******************************************************************************
-* Function Name  : MCL_Chk_OverTemp
-* Description    : Return TRUE if the voltage on the thermal resistor connected 
-*                  to channel AIN3 has reached the threshold level or if the           
-*                  voltage has not yet reached back the threshold level minus  
-*                  the hysteresis value after an overheat detection.
-* Input          : None
-* Output         : Boolean
-* Return         : None
-* 功能说明(中文) : 更新温度滑动平均并判断功率级是否过温（带迟滞）：温度高于阈值返回
-*                  TRUE；处于阈值与迟滞阈值之间且此前已过温则保持 TRUE（防止抖动）。
-* 参数(中文)     : 无。
-* 返回(中文)     : bool — TRUE 表示过温。
-* 备注(中文)     : 使用全局 h_ADCTemp 与 static w_Temp_Average。
+* 功能说明 : 更新温度滑动平均并判断功率级是否过温（带迟滞）：温度高于阈值返回
+*            TRUE；处于阈值与迟滞阈值之间且此前已过温则保持 TRUE（防止抖动）。
+* 参数     : 无。
+* 返回     : bool — TRUE 表示过温。
+* 备注     : 使用全局 h_ADCTemp 与 static w_Temp_Average。
 *******************************************************************************/
 bool MCL_Chk_OverTemp(void)
 {
@@ -369,17 +331,12 @@ bool MCL_Chk_OverTemp(void)
 }
 
 /*******************************************************************************
-* Function Name  : MCL_Calc_BusVolt
-* Description    : It measures the Bus Voltage
-* Input          : None
-* Output         : Bus voltage
-* Return         : None
-* 功能说明(中文) : 用当前 ADC 采样值对母线电压做一阶滑动平均（指数平均），更新
-*                  全局 h_BusV_Average。
-* 参数(中文)     : 无。
-* 返回(中文)     : 无。
-* 备注(中文)     : 使用 static h_BusV_Average 与全局 h_ADCBusvolt；窗口
-*                  BUS_AV_ARRAY_SIZE；在 ADC 中断/周期任务中调用。
+* 功能说明 : 用当前 ADC 采样值对母线电压做一阶滑动平均（指数平均），更新
+*            全局 h_BusV_Average。
+* 参数     : 无。
+* 返回     : 无。
+* 备注     : 使用 static h_BusV_Average 与全局 h_ADCBusvolt；窗口
+*            BUS_AV_ARRAY_SIZE；在 ADC 中断/周期任务中调用。
 *******************************************************************************/
 void MCL_Calc_BusVolt(void)
 {
@@ -388,16 +345,11 @@ void MCL_Calc_BusVolt(void)
 }
 
 /*******************************************************************************
-* Function Name  : MCL_Chk_BusVolt 
-* Description    : Check for Bus Over Voltage
-* Input          : None
-* Output         : Boolean
-* Return         : None
-* 功能说明(中文) : 依据母线电压平均值判断母线状态：高于过压阈值返回 OVER_VOLT，
-*                  低于欠压阈值返回 UNDER_VOLT，否则返回 NO_FAULT。
-* 参数(中文)     : 无。
-* 返回(中文)     : BusV_t — 母线电压状态枚举（NO_FAULT/OVER_VOLT/UNDER_VOLT）。
-* 备注(中文)     : 使用 static h_BusV_Average。
+* 功能说明 : 依据母线电压平均值判断母线状态：高于过压阈值返回 OVER_VOLT，
+*            低于欠压阈值返回 UNDER_VOLT，否则返回 NO_FAULT。
+* 参数     : 无。
+* 返回     : BusV_t — 母线电压状态枚举（NO_FAULT/OVER_VOLT/UNDER_VOLT）。
+* 备注     : 使用 static h_BusV_Average。
 *******************************************************************************/
 BusV_t MCL_Chk_BusVolt(void)
 {
@@ -418,16 +370,11 @@ BusV_t MCL_Chk_BusVolt(void)
 }
 
 /*******************************************************************************
-* Function Name  : MCL_Get_BusVolt
-* Description    : Get bus voltage in s16
-* Input          : None
-* Output         : None
-* Return         : Bus voltage in s16 unit
-* 功能说明(中文) : 返回母线电压的 s16 内部定标值（ADC 计数），供观测器
-*                  STO_Calc_Rotor_Angle 等作为母线电压输入使用。
-* 参数(中文)     : 无。
-* 返回(中文)     : s16 — 母线电压平均值（内部 ADC 计数定标）。
-* 备注(中文)     : 直接返回 static h_BusV_Average。
+* 功能说明 : 返回母线电压的 s16 内部定标值（ADC 计数），供观测器
+*            STO_Calc_Rotor_Angle 等作为母线电压输入使用。
+* 参数     : 无。
+* 返回     : s16 — 母线电压平均值（内部 ADC 计数定标）。
+* 备注     : 直接返回 static h_BusV_Average。
 *******************************************************************************/
 s16 MCL_Get_BusVolt(void)
 {
@@ -435,15 +382,10 @@ s16 MCL_Get_BusVolt(void)
 }
 
 /*******************************************************************************
-* Function Name  : MCL_Compute_BusVolt
-* Description    : Compute bus voltage in volt
-* Input          : None
-* Output         : Bus voltage in Volt unit
-* Return         : None
-* 功能说明(中文) : 把母线电压平均值换算为伏特返回（供显示/上位使用）。
-* 参数(中文)     : 无。
-* 返回(中文)     : u16 — 母线电压，单位 V；换算 = h_BusV_Average*BUSV_CONVERSION/32768。
-* 备注(中文)     : 使用 static h_BusV_Average。
+* 功能说明 : 把母线电压平均值换算为伏特返回（供显示/上位使用）。
+* 参数     : 无。
+* 返回     : u16 — 母线电压，单位 V；换算 = h_BusV_Average*BUSV_CONVERSION/32768。
+* 备注     : 使用 static h_BusV_Average。
 *******************************************************************************/
 u16 MCL_Compute_BusVolt(void)
 {
@@ -451,15 +393,10 @@ u16 MCL_Compute_BusVolt(void)
 }
 
 /*******************************************************************************
-* Function Name  : MCL_Compute_Temp
-* Description    : Compute temperature in Celsius degrees
-* Input          : None
-* Output         : temperature in Celsius degrees
-* Return         : None
-* 功能说明(中文) : 把温度滑动平均值换算为摄氏温度返回（供显示使用）。
-* 参数(中文)     : 无。
-* 返回(中文)     : u8 — 温度，单位 °C；换算 = w_Temp_Average*TEMP_CONVERSION/32768 + 14。
-* 备注(中文)     : 使用 static w_Temp_Average；+14 为换算偏移。
+* 功能说明 : 把温度滑动平均值换算为摄氏温度返回（供显示使用）。
+* 参数     : 无。
+* 返回     : u8 — 温度，单位 °C；换算 = w_Temp_Average*TEMP_CONVERSION/32768 + 14。
+* 备注     : 使用 static w_Temp_Average；+14 为换算偏移。
 *******************************************************************************/
 u8 MCL_Compute_Temp(void)
 {
@@ -467,17 +404,12 @@ u8 MCL_Compute_Temp(void)
 }      
 
 /*******************************************************************************
-* Function Name  : MCL_Reset_PID_IntegralTerms
-* Description    : Resets flux, torque and speed PID Integral Terms
-* Input          : None
-* Output         : None
-* Return         : None
-* 功能说明(中文) : 复位速度、转矩(q 轴电流)、磁链(d 轴电流)三个 PID 调节器的积分项，
-*                  避免上次运行的积分残留导致启动冲击。
-* 参数(中文)     : 无。
-* 返回(中文)     : 无。
-* 备注(中文)     : 操作全局 PID_Speed_InitStructure/PID_Torque_InitStructure/
-*                  PID_Flux_InitStructure 的 wIntegral 成员。
+* 功能说明 : 复位速度、转矩(q 轴电流)、磁链(d 轴电流)三个 PID 调节器的积分项，
+*            避免上次运行的积分残留导致启动冲击。
+* 参数     : 无。
+* 返回     : 无。
+* 备注     : 操作全局 PID_Speed_InitStructure/PID_Torque_InitStructure/
+*            PID_Flux_InitStructure 的 wIntegral 成员。
 *******************************************************************************/
 void MCL_Reset_PID_IntegralTerms(void)
 {
@@ -489,27 +421,21 @@ void MCL_Reset_PID_IntegralTerms(void)
 
 #ifdef BRAKE_RESISTOR
 /*******************************************************************************
-* Function Name  : MCL_Brake_Init
-* Description    : Initialize the GPIO driving the switch for resitive brake 
-*                  implementation  
-* Input          : None
-* Output         : None
-* Return         : None
-* 功能说明(中文) : 初始化制动电阻开关 GPIO（PD13 推挽输出）。仅当定义 BRAKE_RESISTOR 时编译。
-* 参数(中文)     : 无。
-* 返回(中文)     : 无。
-* 备注(中文)     : 会打开 GPIOD 时钟并复位相关引脚。
+* 功能说明 : 初始化制动电阻开关 GPIO（PD13 推挽输出）。仅当定义 BRAKE_RESISTOR 时编译。
+* 参数     : 无。
+* 返回     : 无。
+* 备注     : 会打开 GPIOD 时钟并复位相关引脚。
 *******************************************************************************/
 void MCL_Brake_Init(void)
 {  
   GPIO_InitTypeDef GPIO_InitStructure;
 
-  /* Enable GPIOD clock */
+  /* 使能 GPIOD 时钟 */
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
   GPIO_DeInit(BRAKE_GPIO_PORT);
   GPIO_StructInit(&GPIO_InitStructure);
                   
-  /* Configure PD.13 as Output push-pull for break feature */
+  /* 配置 PD.13 为推挽输出，用于制动功能 */
   GPIO_InitStructure.GPIO_Pin = BRAKE_GPIO_PIN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
@@ -517,14 +443,9 @@ void MCL_Brake_Init(void)
 }
 
 /*******************************************************************************
-* Function Name  : MCL_Set_Brake_On
-* Description    : Switch on brake (set the related GPIO pin)
-* Input          : None
-* Output         : None
-* Return         : None
-* 功能说明(中文) : 打开制动电阻（置位 GPIO 引脚）。仅当定义 BRAKE_RESISTOR 时编译。
-* 参数(中文)     : 无。
-* 返回(中文)     : 无。
+* 功能说明 : 打开制动电阻（置位 GPIO 引脚）。仅当定义 BRAKE_RESISTOR 时编译。
+* 参数     : 无。
+* 返回     : 无。
 *******************************************************************************/
 void MCL_Set_Brake_On(void)
 {  
@@ -532,14 +453,9 @@ void MCL_Set_Brake_On(void)
 }
 
 /*******************************************************************************
-* Function Name  : MCL_Set_Brake_Off
-* Description    : Switch off brake (reset the related GPIO pin)
-* Input          : None
-* Output         : None
-* Return         : None
-* 功能说明(中文) : 关闭制动电阻（复位 GPIO 引脚）。仅当定义 BRAKE_RESISTOR 时编译。
-* 参数(中文)     : 无。
-* 返回(中文)     : 无。
+* 功能说明 : 关闭制动电阻（复位 GPIO 引脚）。仅当定义 BRAKE_RESISTOR 时编译。
+* 参数     : 无。
+* 返回     : 无。
 *******************************************************************************/
 void MCL_Set_Brake_Off(void)
 {  
