@@ -1,23 +1,23 @@
-### AL ###
-#Template for AL projects for Dynamics 365 Business Central
-#launch.json folder
+# IAR编译产物
+**/Debug/
+**/Release/
+**/settings/
+*.o
+*.out
+*.hex
+*.bin
+*.map
+*.lst
+*.dep
+*.crf
+*.sct
+*.elf
+
+# IAR工程本地缓存
+*.ewt
+*.ewp.bak
+*.dnx
+*.wsdtq
+
+# VSCode
 .vscode/
-#Cache folder
-.alcache/
-#Symbols folder
-.alpackages/
-#Snapshots folder
-.snapshots/
-#Testing Output folder
-.output/
-#Extension App-file
-*.app
-#Rapid Application Development File
-rad.json
-#Translation Base-file
-*.g.xlf
-#License-files
-*.bclicense
-*.flf
-#Test results file
-TestResults.xml
